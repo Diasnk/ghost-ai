@@ -4,15 +4,16 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Foundation — design system and UI primitives (complete)
+- Editor foundation — base editor chrome components (complete)
 
 ## Current Goal
 
-- Next feature unit after design system verification.
+- Next feature unit after editor chrome verification.
 
 ## Completed
 
 - `01-design-system` — shadcn/ui configured, `lib/utils.ts` with `cn()`, lucide-react installed, and Button / Card / Dialog / Input / Tabs / Textarea / ScrollArea added under `components/ui/`. Dark theme tokens mapped in `globals.css`.
+- `02-editor` — editor navbar, floating project sidebar shell, editor layout wrapper, and reusable dialog content pattern implemented.
 
 ## In Progress
 
@@ -20,7 +21,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Next Up
 
-- Next feature unit after design system is verified.
+- Next feature unit after editor chrome verification.
 
 ## Open Questions
 
@@ -32,4 +33,5 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Session Notes
 
-- Add context needed to resume work in the next session.
+- `02-editor` verified with `npm run lint` and `npx tsc --noEmit`.
+- Removed stale generated `.next/types/validator.ts` because it referenced deleted `app/(editor)` files while current generated dev types only reference `app/page.tsx` and `app/layout.tsx`.
