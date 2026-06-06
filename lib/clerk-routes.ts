@@ -6,3 +6,6 @@ export const clerkSignUpUrl =
 
 export const clerkAfterAuthUrl =
   process.env.NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL ?? "/editor";
+
+export const clerkSignUpAfterAuthUrl =
+  process.env.NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL ?? "/editor";
