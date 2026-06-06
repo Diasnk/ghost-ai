@@ -6,6 +6,7 @@ import { clerkAppearance } from "@/lib/clerk-appearance";
 import {
   clerkAfterAuthUrl,
   clerkSignInUrl,
+  clerkSignUpAfterAuthUrl,
   clerkSignUpUrl,
 } from "@/lib/clerk-routes";
 
@@ -36,12 +37,12 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans">
+      <body className="flex h-full flex-col font-sans">
         <ClerkProvider
           appearance={clerkAppearance}
           signInFallbackRedirectUrl={clerkAfterAuthUrl}
           signInUrl={clerkSignInUrl}
-          signUpFallbackRedirectUrl={clerkAfterAuthUrl}
+          signUpFallbackRedirectUrl={clerkSignUpAfterAuthUrl}
           signUpUrl={clerkSignUpUrl}
         >
           {children}
