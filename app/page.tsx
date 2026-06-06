@@ -1,7 +1,8 @@
-export default function Home() {
-  return (
-    <div className="min-h-screen w-full grid place-items-center">
-      <p>Ghost AI</p>
-    </div>
-  );
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+
+export default async function Home() {
+  const { isAuthenticated } = await auth();
+
+  if (isAuthenticated) redirect("/editor");
 }
