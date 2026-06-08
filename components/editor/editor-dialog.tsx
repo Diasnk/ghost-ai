@@ -27,7 +27,7 @@ export function EditorDialogContent({
   return (
     <DialogContent
       className={cn(
-        "max-w-md rounded-3xl border border-surface-border bg-elevated p-5 text-copy-primary shadow-2xl",
+        "max-w-md rounded-3xl border border-surface-border bg-elevated p-5 text-copy-primary shadow-2xl [&_input]:text-copy-primary",
         className
       )}
       {...props}
