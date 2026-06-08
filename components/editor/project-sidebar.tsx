@@ -2,11 +2,14 @@
 
 import { Plus, X } from "lucide-react";
 
+import { useEditorProjects } from "@/components/editor/editor-projects-context";
+import { ProjectSidebarItem } from "@/components/editor/project-sidebar-item";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
-   interface ProjectSidebarProps {
+interface ProjectSidebarProps {
   isOpen: boolean;
   onClose: () => void;
   className?: string;
@@ -20,11 +23,32 @@ function EmptyProjectState({ label }: { label: string }) {
   );
 }
 
+function ProjectList({ projects }: { projects: ReturnType<typeof useEditorProjects>["projects"] }) {
+  if (projects.length === 0) {
+    return null;
+  }
+
+  return (
+    <ScrollArea className="min-h-0 flex-1">
+      <div className="flex flex-col gap-2 pr-2">
+        {projects.map((project) => (
+          <ProjectSidebarItem key={project.id} project={project} />
+        ))}
+      </div>
+    </ScrollArea>
+  );
+}
+
 export function ProjectSidebar({
   isOpen,
   onClose,
   className,
 }: ProjectSidebarProps) {
+  const { projects, openCreateDialog } = useEditorProjects();
+
+  const ownedProjects = projects.filter((project) => project.ownership === "owned");
+  const sharedProjects = projects.filter((project) => project.ownership === "shared");
+
   return (
     <aside
       aria-hidden={!isOpen}
@@ -51,24 +75,31 @@ export function ProjectSidebar({
         </Button>
       </div>
 
-      <Tabs className="min-h-0 flex-1" defaultValue="my-projects">
+      <Tabs className="flex min-h-0 flex-1 flex-col" defaultValue="my-projects">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="my-projects">My projects</TabsTrigger>
           <TabsTrigger value="shared">Shared</TabsTrigger>
         </TabsList>
-        <TabsContent className="mt-3 flex" value="my-projects">
-          <EmptyProjectState label="No projects yet." />
+        <TabsContent className="mt-3 flex min-h-0 flex-1 flex-col" value="my-projects">
+          {ownedProjects.length === 0 ? (
+            <EmptyProjectState label="No projects yet." />
+          ) : (
+            <ProjectList projects={ownedProjects} />
+          )}
         </TabsContent>
-        <TabsContent className="mt-3 flex" value="shared">
-          <EmptyProjectState label="No shared projects yet." />
+        <TabsContent className="mt-3 flex min-h-0 flex-1 flex-col" value="shared">
+          {sharedProjects.length === 0 ? (
+            <EmptyProjectState label="No shared projects yet." />
+          ) : (
+            <ProjectList projects={sharedProjects} />
+          )}
         </TabsContent>
       </Tabs>
 
-      <Button className="mt-4 w-full" type="button">
+      <Button className="mt-4 w-full" onClick={openCreateDialog} type="button">
         <Plus className="h-4 w-4" />
         New Project
       </Button>
     </aside>
   );
 }
- 
