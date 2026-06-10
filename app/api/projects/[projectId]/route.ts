@@ -20,11 +20,6 @@ export async function PATCH(request: Request, { params }: RouteContext) {
   }
 
   const { projectId } = await params;
-  const access = await findProjectForOwner(projectId, authResult.userId);
-
-  if (access.status !== "ok") {
-    return projectAccessResponse(access);
-  }
 
   let body: RenameProjectBody;
 
@@ -43,9 +38,21 @@ export async function PATCH(request: Request, { params }: RouteContext) {
     return Response.json({ error: "Name cannot be empty" }, { status: 400 });
   }
 
-  const project = await prisma.project.update({
-    where: { id: projectId },
+  const { count } = await prisma.project.updateMany({
+    where: { id: projectId, ownerId: authResult.userId },
     data: { name },
+  });
+
+  if (count === 0) {
+    const access = await findProjectForOwner(projectId, authResult.userId);
+    if (access.status !== "ok") {
+      return projectAccessResponse(access);
+    }
+    return Response.json({ error: "Not found" }, { status: 404 });
+  }
+
+  const project = await prisma.project.findUniqueOrThrow({
+    where: { id: projectId },
   });
 
   return Response.json({ project });
@@ -58,15 +65,18 @@ export async function DELETE(_request: Request, { params }: RouteContext) {
   }
 
   const { projectId } = await params;
-  const access = await findProjectForOwner(projectId, authResult.userId);
 
-  if (access.status !== "ok") {
-    return projectAccessResponse(access);
-  }
-
-  await prisma.project.delete({
-    where: { id: projectId },
+  const { count } = await prisma.project.deleteMany({
+    where: { id: projectId, ownerId: authResult.userId },
   });
+
+  if (count === 0) {
+    const access = await findProjectForOwner(projectId, authResult.userId);
+    if (access.status !== "ok") {
+      return projectAccessResponse(access);
+    }
+    return Response.json({ error: "Not found" }, { status: 404 });
+  }
 
   return new Response(null, { status: 204 });
 }
