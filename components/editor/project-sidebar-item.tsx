@@ -5,10 +5,10 @@ import { Pencil, Trash2 } from "lucide-react";
 import { useEditorProjects } from "@/components/editor/editor-projects-context";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import type { MockProject } from "@/types/project";
+import type { EditorProject } from "@/types/project";
 
 interface ProjectSidebarItemProps {
-  project: MockProject;
+  project: EditorProject;
   className?: string;
 }
 
@@ -30,7 +30,7 @@ export function ProjectSidebarItem({
         <p className="truncate text-sm font-medium text-copy-primary">
           {project.name}
         </p>
-        <p className="truncate text-xs text-copy-muted">{project.slug}</p>
+        <p className="truncate text-xs text-copy-muted">{project.id}</p>
       </div>
 
       {showActions ? (

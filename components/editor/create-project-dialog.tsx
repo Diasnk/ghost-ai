@@ -11,7 +11,7 @@ export function CreateProjectDialog() {
     activeDialog,
     formName,
     isLoading,
-    slugPreview,
+    roomIdPreview,
     setFormName,
     closeDialog,
     handleCreate,
@@ -67,7 +67,7 @@ export function CreateProjectDialog() {
             value={formName}
           />
           <p className="text-sm text-copy-muted">
-            slug: {slugPreview || "your-project-slug"}
+            Room ID: {roomIdPreview || "your-project-id"}
           </p>
         </div>
       </EditorDialogContent>

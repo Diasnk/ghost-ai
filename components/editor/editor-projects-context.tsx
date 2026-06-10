@@ -3,20 +3,23 @@
 import { createContext, useContext } from "react";
 
 import {
-  useProjectDialogs,
-  type UseProjectDialogsReturn,
-} from "@/hooks/use-project-dialogs";
+  useProjectActions,
+  type UseProjectActionsReturn,
+} from "@/hooks/use-project-actions";
+import type { EditorProject } from "@/types/project";
 
-const EditorProjectsContext = createContext<UseProjectDialogsReturn | null>(
+const EditorProjectsContext = createContext<UseProjectActionsReturn | null>(
   null
 );
 
 export function EditorProjectsProvider({
   children,
+  initialProjects,
 }: {
   children: React.ReactNode;
+  initialProjects: EditorProject[];
 }) {
-  const value = useProjectDialogs();
+  const value = useProjectActions(initialProjects);
 
   return (
     <EditorProjectsContext.Provider value={value}>
@@ -25,7 +28,7 @@ export function EditorProjectsProvider({
   );
 }
 
-export function useEditorProjects(): UseProjectDialogsReturn {
+export function useEditorProjects(): UseProjectActionsReturn {
   const context = useContext(EditorProjectsContext);
 
   if (!context) {

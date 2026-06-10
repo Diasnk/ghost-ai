@@ -7,17 +7,23 @@ import { EditorProjectsProvider } from "@/components/editor/editor-projects-cont
 import { ProjectDialogs } from "@/components/editor/project-dialogs";
 import { ProjectSidebar } from "@/components/editor/project-sidebar";
 import { cn } from "@/lib/utils";
+import type { EditorProject } from "@/types/project";
 
 interface EditorLayoutProps {
   children?: React.ReactNode;
   className?: string;
+  initialProjects: EditorProject[];
 }
 
-export function EditorLayout({ children, className }: EditorLayoutProps) {
+export function EditorLayout({
+  children,
+  className,
+  initialProjects,
+}: EditorLayoutProps) {
   const [isProjectSidebarOpen, setIsProjectSidebarOpen] = useState(false);
 
   return (
-    <EditorProjectsProvider>
+    <EditorProjectsProvider initialProjects={initialProjects}>
       <div className={cn("flex min-h-screen flex-col bg-base text-copy-primary", className)}>
         <EditorNavbar
           isSidebarOpen={isProjectSidebarOpen}
