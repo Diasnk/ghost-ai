@@ -4,11 +4,11 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Prisma setup (`05-prisma`) — complete
+- Wire editor home (`07-wire-editor-home`) — complete
 
 ## Current Goal
 
-- Next feature unit after Prisma setup.
+- Next feature unit after editor home API wiring.
 
 ## Completed
 
@@ -17,6 +17,8 @@ Update this file whenever the current phase, active feature, or implementation s
 - `03-auth` — `@clerk/ui` installed; `ClerkProvider` with dark theme + CSS variable overrides; root `proxy.ts` route protection; sign-in/sign-up pages with two-panel auth layout; `/editor` route; authenticated `/` redirect; `UserButton` in editor navbar. Verified with `npm run build`, `npm run lint`, and local auth smoke tests.
 - `04-project-dialogs` — editor home with heading, description, and `New Project` button; Create / Rename / Delete dialogs via `EditorDialogContent`; `useProjectDialogs` hook for dialog, form, and loading state; mock in-memory projects with owned/shared gating; sidebar rename/delete actions on owned projects only; mobile sidebar backdrop scrim; slug preview on create. Verified with `npm run lint` and `npx tsc --noEmit`.
 - `05-prisma` — `Project` and `ProjectCollaborator` models in `prisma/models/project.prisma` with `ProjectStatus` enum, relations, indexes, and cascade delete; cached `lib/prisma.ts` singleton branching on `DATABASE_URL` (`prisma+postgres://` → Accelerate, otherwise `@prisma/adapter-pg`); initial migration `20260608191953_init` applied; client generated to `app/generated/prisma`. Verified with `npx prisma validate` and `npm run build`.
+- `06-project-apis` — REST project routes at `app/api/projects/route.ts` (GET list, POST create) and `app/api/projects/[projectId]/route.ts` (PATCH rename, DELETE); `lib/require-auth.ts` for Clerk `401` gate; `lib/projects.ts` for owner lookup with `403`/`404` on mutations. Create defaults missing name to `Untitled Project`. Verified with `npm run build`.
+- `07-wire-editor-home` — server-side owned/shared project fetch in `app/editor/layout.tsx` via `getEditorProjectLists()`; `useProjectActions` hook for dialog state and API mutations (create/rename/delete); `lib/room-id.ts` for slug + suffix room IDs aligned with project IDs; POST `/api/projects` accepts optional `id`; sidebar and dialogs wired to real data; create navigates to `/editor/[projectId]`; delete refreshes or redirects from active workspace; minimal workspace placeholder at `app/editor/[projectId]/page.tsx`. Verified with `npm run build`.
 
 ## In Progress
 
@@ -24,7 +26,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Next Up
 
-- Next feature unit after Prisma setup.
+- Next feature unit after editor home API wiring (likely canvas/workspace).
 
 ## Open Questions
 
@@ -34,7 +36,10 @@ Update this file whenever the current phase, active feature, or implementation s
 
 - `/` is protected by `proxy.ts`; unauthenticated users are redirected to sign-in by Clerk middleware. Authenticated users hitting `/` are redirected to `/editor` in `app/page.tsx`.
 - Public routes are derived from `NEXT_PUBLIC_CLERK_SIGN_IN_URL` and `NEXT_PUBLIC_CLERK_SIGN_UP_URL` (fallback `/sign-in`, `/sign-up`).
-- Project dialog and mock project state live in `useProjectDialogs`, provided via `EditorProjectsProvider` in `EditorLayout`. UI still uses mock data until a later persistence feature unit.
+- Editor routes use `app/editor/layout.tsx` (server) to fetch owned and shared projects via `getEditorProjectLists()` and pass `initialProjects` to client `EditorLayout` → `EditorProjectsProvider` → `useProjectActions`. No client-side fetch on initial load.
+- Project ID and Liveblocks room ID are aligned: create generates `{slugified-name}-{6-char-suffix}` via `generateRoomId()` and passes it as `id` to `POST /api/projects`.
+- Project CRUD is served by `app/api/projects/*`. `requireAuth()` enforces `401` on unauthenticated requests; `findProjectForOwner()` enforces owner-only PATCH/DELETE with `403` for non-owners. List endpoint scopes to `ownerId` matching the authenticated Clerk user.
+- Shared projects are resolved via `ProjectCollaborator.email` matched to the Clerk user's primary email.
 - `Project` and `ProjectCollaborator` metadata live in PostgreSQL via Prisma. `lib/prisma.ts` is the single database entry point; `ownerId` maps to Clerk user IDs; `canvasJsonPath` stores the Vercel Blob reference when a canvas exists.
 
 ## Session Notes
@@ -47,3 +52,5 @@ Update this file whenever the current phase, active feature, or implementation s
 - Auth smoke tests passed: unauthenticated `/` and `/editor` redirect to `/sign-in`; `/sign-in` and `/sign-up` return 200 with path-based Clerk UI; authenticated `/` redirects to `/editor`.
 - `04-project-dialogs` checklist: sidebar actions wired; slug preview works; no TypeScript errors; no lint errors.
 - `05-prisma`: fixed generator output path in `prisma/schema.prisma` from `..app/generated/prisma` to `../app/generated/prisma`; added `@prisma/extension-accelerate` for Accelerate URL branch.
+- `06-project-apis`: routes registered at `/api/projects` and `/api/projects/[projectId]`; `npm run build` passes with both API routes listed as dynamic handlers.
+- `07-wire-editor-home`: replaced `useProjectDialogs` mock hook with `useProjectActions`; removed `lib/mock-projects.ts`; create dialog shows live room ID preview with stable suffix per dialog open.

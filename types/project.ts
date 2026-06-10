@@ -1,8 +1,7 @@
 export type ProjectOwnership = "owned" | "shared";
 
-export interface MockProject {
+export interface EditorProject {
   id: string;
   name: string;
-  slug: string;
   ownership: ProjectOwnership;
 }
