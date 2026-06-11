@@ -66,6 +66,8 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  --spacing-navbar: var(--navbar-height);
 }
 
 :root {
@@ -86,6 +88,7 @@
   --state-error: #ff4d4f;
   --state-success: #34d399;
   --state-warning: #fbbf24;
+  --navbar-height: 3.5rem;
 
   --background: var(--bg-base);
   --foreground: var(--text-primary);

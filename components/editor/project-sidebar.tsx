@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 interface ProjectSidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  activeProjectId?: string;
   className?: string;
 }
 
@@ -23,7 +24,13 @@ function EmptyProjectState({ label }: { label: string }) {
   );
 }
 
-function ProjectList({ projects }: { projects: ReturnType<typeof useEditorProjects>["projects"] }) {
+function ProjectList({
+  projects,
+  activeProjectId,
+}: {
+  projects: ReturnType<typeof useEditorProjects>["projects"];
+  activeProjectId?: string;
+}) {
   if (projects.length === 0) {
     return null;
   }
@@ -32,7 +39,11 @@ function ProjectList({ projects }: { projects: ReturnType<typeof useEditorProjec
     <ScrollArea className="min-h-0 flex-1">
       <div className="flex flex-col gap-2 pr-2">
         {projects.map((project) => (
-          <ProjectSidebarItem key={project.id} project={project} />
+          <ProjectSidebarItem
+            key={project.id}
+            isActive={project.id === activeProjectId}
+            project={project}
+          />
         ))}
       </div>
     </ScrollArea>
@@ -42,6 +53,7 @@ function ProjectList({ projects }: { projects: ReturnType<typeof useEditorProjec
 export function ProjectSidebar({
   isOpen,
   onClose,
+  activeProjectId,
   className,
 }: ProjectSidebarProps) {
   const { projects, openCreateDialog } = useEditorProjects();
@@ -84,14 +96,14 @@ export function ProjectSidebar({
           {ownedProjects.length === 0 ? (
             <EmptyProjectState label="No projects yet." />
           ) : (
-            <ProjectList projects={ownedProjects} />
+            <ProjectList activeProjectId={activeProjectId} projects={ownedProjects} />
           )}
         </TabsContent>
         <TabsContent className="mt-3 flex min-h-0 flex-1 flex-col" value="shared">
           {sharedProjects.length === 0 ? (
             <EmptyProjectState label="No shared projects yet." />
           ) : (
-            <ProjectList projects={sharedProjects} />
+            <ProjectList activeProjectId={activeProjectId} projects={sharedProjects} />
           )}
         </TabsContent>
       </Tabs>

@@ -1,7 +1,8 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-import { EditorLayout } from "@/components/editor/editor-layout";
+import { EditorProjectsProvider } from "@/components/editor/editor-projects-context";
+import { ProjectDialogs } from "@/components/editor/project-dialogs";
 import { clerkSignInUrl } from "@/lib/clerk-routes";
 import { getEditorProjectLists } from "@/lib/projects";
 
@@ -23,6 +24,9 @@ export default async function EditorRouteLayout({
   const initialProjects = [...owned, ...shared];
 
   return (
-    <EditorLayout initialProjects={initialProjects}>{children}</EditorLayout>
+    <EditorProjectsProvider initialProjects={initialProjects}>
+      <ProjectDialogs />
+      {children}
+    </EditorProjectsProvider>
   );
 }
