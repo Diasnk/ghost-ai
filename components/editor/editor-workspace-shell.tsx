@@ -5,11 +5,14 @@ import { useState } from "react";
 import { AiSidebarPlaceholder } from "@/components/editor/ai-sidebar-placeholder";
 import { EditorNavbar } from "@/components/editor/editor-navbar";
 import { ProjectSidebar } from "@/components/editor/project-sidebar";
+import { ShareProjectDialog } from "@/components/editor/share-project-dialog";
+import { useShareDialog } from "@/hooks/use-share-dialog";
 import { cn } from "@/lib/utils";
 
 interface EditorWorkspaceShellProps {
   children?: React.ReactNode;
   activeProjectId: string;
+  isOwner: boolean;
   projectName: string;
   className?: string;
 }
@@ -17,18 +20,20 @@ interface EditorWorkspaceShellProps {
 export function EditorWorkspaceShell({
   children,
   activeProjectId,
+  isOwner,
   projectName,
   className,
 }: EditorWorkspaceShellProps) {
   const [isProjectSidebarOpen, setIsProjectSidebarOpen] = useState(false);
   const [isAiSidebarOpen, setIsAiSidebarOpen] = useState(false);
+  const shareDialog = useShareDialog({ projectId: activeProjectId, isOwner });
 
   return (
     <div className={cn("flex min-h-screen flex-col bg-base text-copy-primary", className)}>
       <EditorNavbar
         isAiSidebarOpen={isAiSidebarOpen}
         isSidebarOpen={isProjectSidebarOpen}
-        onShareClick={() => undefined}
+        onShareClick={shareDialog.openDialog}
         onToggleAiSidebar={() => setIsAiSidebarOpen((isOpen) => !isOpen)}
         onToggleSidebar={() => setIsProjectSidebarOpen((isOpen) => !isOpen)}
         projectName={projectName}
@@ -55,6 +60,8 @@ export function EditorWorkspaceShell({
           onClose={() => setIsAiSidebarOpen(false)}
         />
       </div>
+
+      <ShareProjectDialog shareDialog={shareDialog} />
     </div>
   );
 }

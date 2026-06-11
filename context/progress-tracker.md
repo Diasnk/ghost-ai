@@ -4,11 +4,11 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Editor workspace shell (`08-editor-workspace-shell`) — complete
+- Share dialog (`09-share-dialog`) — complete
 
 ## Current Goal
 
-- Next feature unit after workspace shell (likely canvas / Liveblocks integration).
+- Canvas / Liveblocks integration.
 
 ## Completed
 
@@ -20,6 +20,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - `06-project-apis` — REST project routes at `app/api/projects/route.ts` (GET list, POST create) and `app/api/projects/[projectId]/route.ts` (PATCH rename, DELETE); `lib/require-auth.ts` for Clerk `401` gate; `lib/projects.ts` for owner lookup with `403`/`404` on mutations. Create defaults missing name to `Untitled Project`. Verified with `npm run build`.
 - `07-wire-editor-home` — server-side owned/shared project fetch in `app/editor/layout.tsx` via `getEditorProjectLists()`; `useProjectActions` hook for dialog state and API mutations (create/rename/delete); `lib/room-id.ts` for slug + suffix room IDs aligned with project IDs; POST `/api/projects` accepts optional `id`; sidebar and dialogs wired to real data; create navigates to `/editor/[projectId]`; delete refreshes or redirects from active workspace; minimal workspace placeholder at `app/editor/[projectId]/page.tsx`. Verified with `npm run build`.
 - `08-editor-workspace-shell` — `lib/project-access.ts` with `getClerkIdentity()` and `findProjectForUser()` (owner or collaborator); `AccessDenied` for missing/unauthorized projects; editor layout refactored to provider-only with separate home (`EditorLayout`) and workspace (`EditorWorkspaceShell`) chrome; workspace server layout at `app/editor/[projectId]/layout.tsx`; navbar project name + share/AI toggles; sidebar active-project highlighting and navigation links; canvas and AI sidebar placeholders. Verified with `npm run build`.
+- `09-share-dialog` — collaborator REST routes at `app/api/projects/[projectId]/collaborators` (GET list, POST invite) and `.../collaborators/[collaboratorId]` (DELETE remove); `lib/collaborators.ts` + `lib/clerk-users.ts` for Prisma email storage and Clerk Backend enrichment (display name + avatar); `ShareProjectDialog` + `useShareDialog` wired to navbar Share button; owners can invite/remove/copy link; collaborators get read-only list; access list shows workspace owner with role badges. Verified with `npm run build`.
 
 ## In Progress
 
@@ -43,6 +44,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - Shared projects are resolved via `ProjectCollaborator.email` matched to the Clerk user's primary email.
 - Workspace access is enforced in `app/editor/[projectId]/layout.tsx` via `findProjectForUser()` (owner or collaborator by email). Missing or unauthorized projects render `AccessDenied` with a link back to `/editor`.
 - `Project` and `ProjectCollaborator` metadata live in PostgreSQL via Prisma. `lib/prisma.ts` is the single database entry point; `ownerId` maps to Clerk user IDs; `canvasJsonPath` stores the Vercel Blob reference when a canvas exists.
+- Collaborator sharing is served by `app/api/projects/[projectId]/collaborators/*`. GET requires project membership via `findProjectForUser()`; invite/remove require ownership via `findProjectForOwner()`. Collaborators are stored by normalized email in `ProjectCollaborator`; display names and avatars are enriched at read time from Clerk Backend API (`lib/clerk-users.ts`). No local user table.
 
 ## Session Notes
 
@@ -57,3 +59,4 @@ Update this file whenever the current phase, active feature, or implementation s
 - `06-project-apis`: routes registered at `/api/projects` and `/api/projects/[projectId]`; `npm run build` passes with both API routes listed as dynamic handlers.
 - `07-wire-editor-home`: replaced `useProjectDialogs` mock hook with `useProjectActions`; removed `lib/mock-projects.ts`; create dialog shows live room ID preview with stable suffix per dialog open.
 - `08-editor-workspace-shell`: verified with `npm run build`; `npx tsc --noEmit` passes.
+- `09-share-dialog`: share dialog opens from workspace navbar; owner invite/remove/copy-link and collaborator read-only list implemented; Clerk enrichment for known users; verified with `npm run build`.
