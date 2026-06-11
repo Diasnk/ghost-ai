@@ -69,7 +69,11 @@ export async function POST(request: Request, { params }: RouteContext) {
     return Response.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  if (typeof body.email !== "string") {
+  if (
+    typeof body !== "object" ||
+    body === null ||
+    typeof body.email !== "string"
+  ) {
     return Response.json({ error: "Email is required" }, { status: 400 });
   }
 

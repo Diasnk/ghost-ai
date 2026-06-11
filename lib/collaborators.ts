@@ -93,8 +93,22 @@ export async function inviteProjectCollaborator(
       },
     });
 
-    const [view] = await toCollaboratorViews([collaborator]);
-    return { status: "ok", collaborator: view };
+    try {
+      const [view] = await toCollaboratorViews([collaborator]);
+      return { status: "ok", collaborator: view };
+    } catch {
+      return {
+        status: "ok",
+        collaborator: {
+          id: collaborator.id,
+          email: normalizedEmail,
+          displayName: null,
+          imageUrl: null,
+          role: "collaborator",
+          createdAt: collaborator.createdAt.toISOString(),
+        },
+      };
+    }
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&

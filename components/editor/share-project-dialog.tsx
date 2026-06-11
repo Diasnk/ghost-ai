@@ -1,5 +1,6 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import { UserMinus } from "lucide-react";
 
 import { EditorDialogContent } from "@/components/editor/editor-dialog";
@@ -60,8 +61,11 @@ export function ShareProjectDialog({ shareDialog }: ShareProjectDialogProps) {
     isOwner,
     inviteEmail,
     isLoading,
+    loadError,
     isInviting,
+    inviteError,
     isRemovingId,
+    removeError,
     copyFeedback,
     projectUrl,
     setInviteEmail,
@@ -70,6 +74,12 @@ export function ShareProjectDialog({ shareDialog }: ShareProjectDialogProps) {
     removeCollaborator,
     copyProjectLink,
   } = shareDialog;
+
+  const fullProjectUrl = useSyncExternalStore(
+    () => () => {},
+    () => `${window.location.origin}${projectUrl}`,
+    () => projectUrl
+  );
 
   const canInvite = inviteEmail.trim().length > 0 && !isInviting && !isLoading;
 
@@ -103,11 +113,7 @@ export function ShareProjectDialog({ shareDialog }: ShareProjectDialogProps) {
                     <Input
                       readOnly
                       className="truncate"
-                      value={
-                        typeof window === "undefined"
-                          ? projectUrl
-                          : `${window.location.origin}${projectUrl}`
-                      }
+                      value={fullProjectUrl}
                     />
                   </div>
                   <Button
@@ -150,6 +156,9 @@ export function ShareProjectDialog({ shareDialog }: ShareProjectDialogProps) {
                     {isInviting ? "Inviting..." : "Invite"}
                   </Button>
                 </div>
+                {inviteError ? (
+                  <p className="text-sm text-state-error">{inviteError}</p>
+                ) : null}
               </div>
             </>
           ) : null}
@@ -161,6 +170,8 @@ export function ShareProjectDialog({ shareDialog }: ShareProjectDialogProps) {
 
             {isLoading ? (
               <p className="text-sm text-copy-muted">Loading access list...</p>
+            ) : loadError ? (
+              <p className="text-sm text-state-error">{loadError}</p>
             ) : members.length === 0 ? (
               <p className="text-sm text-copy-muted">No members found.</p>
             ) : (
@@ -211,6 +222,9 @@ export function ShareProjectDialog({ shareDialog }: ShareProjectDialogProps) {
                 </ul>
               </ScrollArea>
             )}
+            {removeError ? (
+              <p className="text-sm text-state-error">{removeError}</p>
+            ) : null}
           </div>
         </div>
       </EditorDialogContent>
