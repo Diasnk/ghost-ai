@@ -30,6 +30,7 @@ export default async function ProjectWorkspaceLayout({
   return (
     <EditorWorkspaceShell
       activeProjectId={access.project.id}
+      isOwner={access.project.ownerId === identity.userId}
       projectName={access.project.name}
     >
       {children}
