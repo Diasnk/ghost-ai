@@ -12,11 +12,15 @@ import {
 
 import {
   getShapeDefaults,
+  type ShapeDragPayload,
   SHAPE_DRAG_MIME,
   serializeShapeDragPayload,
 } from "@/lib/canvas-shape-defaults";
 import { cn } from "@/lib/utils";
 import { NODE_SHAPES, type NodeShape } from "@/types/canvas";
+
+const BLANK_DRAG_IMAGE =
+  "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
 const SHAPE_ICONS: Record<NodeShape, LucideIcon> = {
   rectangle: Square,
@@ -29,9 +33,15 @@ const SHAPE_ICONS: Record<NodeShape, LucideIcon> = {
 
 interface ShapePanelProps {
   className?: string;
+  onShapeDragStart?: (payload: ShapeDragPayload, event: React.DragEvent) => void;
+  onShapeDragEnd?: () => void;
 }
 
-export function ShapePanel({ className }: ShapePanelProps) {
+export function ShapePanel({
+  className,
+  onShapeDragStart,
+  onShapeDragEnd,
+}: ShapePanelProps) {
   return (
     <div
       className={cn(
@@ -48,6 +58,9 @@ export function ShapePanel({ className }: ShapePanelProps) {
             aria-label={`Add ${shape}`}
             className="flex h-9 w-9 cursor-grab items-center justify-center rounded-full text-copy-secondary transition hover:bg-elevated hover:text-copy-primary active:cursor-grabbing"
             draggable
+            onDragEnd={() => {
+              onShapeDragEnd?.();
+            }}
             onDragStart={(event) => {
               const payload = getShapeDefaults(shape);
               event.dataTransfer.setData(
@@ -55,6 +68,12 @@ export function ShapePanel({ className }: ShapePanelProps) {
                 serializeShapeDragPayload(payload)
               );
               event.dataTransfer.effectAllowed = "move";
+
+              const blank = new Image();
+              blank.src = BLANK_DRAG_IMAGE;
+              event.dataTransfer.setDragImage(blank, 0, 0);
+
+              onShapeDragStart?.(payload, event);
             }}
             type="button"
           >

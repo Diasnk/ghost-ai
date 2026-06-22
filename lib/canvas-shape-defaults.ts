@@ -22,6 +22,17 @@ export function getShapeDefaults(shape: NodeShape): ShapeDragPayload {
   return { shape, width, height };
 }
 
+export function getNodeMinDimensions(shape: NodeShape): {
+  minWidth: number;
+  minHeight: number;
+} {
+  const { width, height } = SHAPE_DEFAULTS[shape];
+  return {
+    minWidth: Math.floor(width / 2),
+    minHeight: Math.floor(height / 2),
+  };
+}
+
 export function serializeShapeDragPayload(payload: ShapeDragPayload): string {
   return JSON.stringify(payload);
 }

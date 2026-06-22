@@ -68,18 +68,18 @@ Default node color: `#1F1F1F` with `#EDEDED` text.
 
 ### Edge Style
 
-Smooth-step path with an arrow marker. Default edge color: `#f8fafc`. Stroke width is thin — edges are visually secondary to nodes.
+Right-angle smooth-step routing via `getSmoothStepPath`, with rounded stroke caps and a compact arrowhead at the target end. Default edge color: `var(--text-primary)` (`#f0f0f4`). Stroke width is thin (~1.5px) — edges are visually secondary to nodes. Edges are dimmed at rest and brighten on hover or selection. A wider transparent interaction stroke makes edges easier to click without increasing visible thickness. Inline labels render as pill badges at the path midpoint (positioned via `EdgeLabelRenderer` and `getSmoothStepPath` label coordinates).
 
 ### Node Shapes
 
-6 supported shapes, defined in `types/canvas.ts` as `NODE_SHAPES`. Complex shapes (diamond, hexagon, cylinder) are rendered as inline SVGs rather than CSS borders.
+6 supported shapes, defined in `types/canvas.ts` as `NODE_SHAPES`. Rectangle, pill, and circle use CSS borders and fills; diamond, hexagon, and cylinder use inline SVGs that scale with node size.
 
-- `rectangle` — default general-purpose node
-- `diamond` — decision / gateway
-- `circle` — event / endpoint
-- `pill` — service / process
-- `cylinder` — database / storage
-- `hexagon` — external system / boundary
+- `rectangle` — default general-purpose node (CSS, `rounded-xl`)
+- `diamond` — decision / gateway (SVG)
+- `circle` — event / endpoint (CSS, `border-radius: 50%`)
+- `pill` — service / process (CSS, full capsule / `rounded-full`)
+- `cylinder` — database / storage (SVG)
+- `hexagon` — external system / boundary (SVG)
 
 ### Connection Handles
 

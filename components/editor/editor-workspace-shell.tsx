@@ -6,6 +6,8 @@ import { AiSidebarPlaceholder } from "@/components/editor/ai-sidebar-placeholder
 import { EditorNavbar } from "@/components/editor/editor-navbar";
 import { ProjectSidebar } from "@/components/editor/project-sidebar";
 import { ShareProjectDialog } from "@/components/editor/share-project-dialog";
+import { StarterTemplatesModal } from "@/components/editor/starter-templates-modal";
+import { StarterTemplatesProvider, useStarterTemplates } from "@/components/editor/starter-templates-context";
 import { useShareDialog } from "@/hooks/use-share-dialog";
 import { cn } from "@/lib/utils";
 
@@ -17,7 +19,7 @@ interface EditorWorkspaceShellProps {
   className?: string;
 }
 
-export function EditorWorkspaceShell({
+function EditorWorkspaceShellContent({
   children,
   activeProjectId,
   isOwner,
@@ -27,6 +29,7 @@ export function EditorWorkspaceShell({
   const [isProjectSidebarOpen, setIsProjectSidebarOpen] = useState(false);
   const [isAiSidebarOpen, setIsAiSidebarOpen] = useState(false);
   const shareDialog = useShareDialog({ projectId: activeProjectId, isOwner });
+  const { openModal } = useStarterTemplates();
 
   return (
     <div className={cn("flex min-h-screen flex-col bg-base text-copy-primary", className)}>
@@ -34,6 +37,7 @@ export function EditorWorkspaceShell({
         isAiSidebarOpen={isAiSidebarOpen}
         isSidebarOpen={isProjectSidebarOpen}
         onShareClick={shareDialog.openDialog}
+        onTemplatesClick={openModal}
         onToggleAiSidebar={() => setIsAiSidebarOpen((isOpen) => !isOpen)}
         onToggleSidebar={() => setIsProjectSidebarOpen((isOpen) => !isOpen)}
         projectName={projectName}
@@ -62,6 +66,15 @@ export function EditorWorkspaceShell({
       </div>
 
       <ShareProjectDialog shareDialog={shareDialog} />
+      <StarterTemplatesModal />
     </div>
+  );
+}
+
+export function EditorWorkspaceShell(props: EditorWorkspaceShellProps) {
+  return (
+    <StarterTemplatesProvider>
+      <EditorWorkspaceShellContent {...props} />
+    </StarterTemplatesProvider>
   );
 }
