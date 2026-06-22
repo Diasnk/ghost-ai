@@ -79,18 +79,23 @@ function ConnectionHandle({
       : "opacity-0 group-hover:opacity-100"
   );
 
-  const handleClassName = cn(
+  const sourceHandleClassName = cn(
     "border-none! bg-transparent!",
     forceVisible
       ? "pointer-events-auto opacity-100"
       : "pointer-events-none opacity-0 group-hover:pointer-events-auto group-hover:opacity-100"
   );
 
+  const targetHandleClassName = cn(
+    "border-none! bg-transparent!",
+    "pointer-events-none opacity-0"
+  );
+
   return (
     <>
       <Handle
         aria-label={LABELS[connectionNode]}
-        className={handleClassName}
+        className={sourceHandleClassName}
         id={connectionHandleId(connectionNode, "source")}
         position={position}
         style={handleStyle}
@@ -105,7 +110,7 @@ function ConnectionHandle({
       </Handle>
       <Handle
         aria-label={`${LABELS[connectionNode]} target`}
-        className={handleClassName}
+        className={targetHandleClassName}
         id={connectionHandleId(connectionNode, "target")}
         position={position}
         style={handleStyle}

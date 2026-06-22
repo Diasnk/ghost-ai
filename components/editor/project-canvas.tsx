@@ -84,6 +84,17 @@ function ProjectCanvasFlowInner() {
       edges: { initial: [] },
     });
 
+  useEffect(() => {
+    if (nodes.length > 0) {
+      const maxId = nodes.reduce((max, node) => {
+        const parts = node.id.split('-');
+        const counterPart = parseInt(parts[parts.length - 1], 10);
+        return !isNaN(counterPart) && counterPart > max ? counterPart : max;
+      }, 0);
+      nodeIdCounter.current = maxId;
+    }
+  }, []);
+
   const nodeTypes = useMemo(
     () => ({
       [CANVAS_NODE_TYPE]: CanvasNode,

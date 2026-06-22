@@ -18,7 +18,9 @@ export function isValidConnection(connection: Connection): boolean {
 
   if (
     !parseConnectionHandleId(connection.sourceHandle) ||
-    !parseConnectionHandleId(connection.targetHandle)
+    !parseConnectionHandleId(connection.targetHandle) ||
+    !connection.sourceHandle?.endsWith("-source") ||
+    !connection.targetHandle?.endsWith("-target")
   ) {
     return false;
   }
@@ -28,7 +30,7 @@ export function isValidConnection(connection: Connection): boolean {
 
 export function createCanvasEdge(connection: Connection): CanvasEdge {
   return {
-    id: `edge-${connection.source}-${connection.sourceHandle}-${connection.target}-${connection.targetHandle}-${Date.now()}`,
+    id: `edge-${connection.source}-${connection.sourceHandle}-${connection.target}-${connection.targetHandle}-${crypto.randomUUID()}`,
     type: CANVAS_EDGE_TYPE,
     source: connection.source,
     target: connection.target,

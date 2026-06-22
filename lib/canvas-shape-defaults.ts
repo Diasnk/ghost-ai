@@ -63,6 +63,8 @@ export function parseShapeDragPayload(raw: string): ShapeDragPayload | null {
       !isNodeShape(shape) ||
       typeof width !== "number" ||
       typeof height !== "number" ||
+      !isFinite(width) ||
+      !isFinite(height) ||
       width <= 0 ||
       height <= 0
     ) {
