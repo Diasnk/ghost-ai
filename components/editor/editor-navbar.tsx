@@ -2,6 +2,7 @@
 
 import { UserButton } from "@clerk/nextjs";
 import {
+  LayoutTemplate,
   PanelLeftClose,
   PanelLeftOpen,
   Share2,
@@ -17,6 +18,7 @@ interface EditorNavbarProps {
   centerContent?: React.ReactNode;
   projectName?: string;
   onShareClick?: () => void;
+  onTemplatesClick?: () => void;
   isAiSidebarOpen?: boolean;
   onToggleAiSidebar?: () => void;
   className?: string;
@@ -28,6 +30,7 @@ export function EditorNavbar({
   centerContent,
   projectName,
   onShareClick,
+  onTemplatesClick,
   isAiSidebarOpen,
   onToggleAiSidebar,
   className,
@@ -73,6 +76,17 @@ export function EditorNavbar({
       <div className="flex shrink-0 items-center gap-2.5">
         {isWorkspace ? (
           <>
+            <Button
+              aria-label="Import starter template"
+              className="rounded-full bg-subtle px-3 text-copy-secondary hover:bg-elevated hover:text-copy-primary"
+              onClick={onTemplatesClick}
+              size="default"
+              type="button"
+              variant="ghost"
+            >
+              <LayoutTemplate className="h-4 w-4" />
+              Templates
+            </Button>
             <Button
               aria-label="Share project"
               className="rounded-full bg-subtle px-3 text-copy-secondary hover:bg-elevated hover:text-copy-primary"
