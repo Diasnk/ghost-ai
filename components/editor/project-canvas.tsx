@@ -25,6 +25,8 @@ import {
 import { useLiveblocksFlow } from "@liveblocks/react-flow";
 
 import { CanvasControlBar } from "@/components/editor/canvas-control-bar";
+import { CanvasLiveCursors } from "@/components/editor/canvas-live-cursors";
+import { CanvasPresenceAvatars } from "@/components/editor/canvas-presence-avatars";
 import { CanvasEdge as CanvasEdgeComponent } from "@/components/editor/canvas-edge";
 import { CanvasConnectionProvider, useCanvasConnection } from "@/components/editor/canvas-connection-context";
 import { CanvasNode } from "@/components/editor/canvas-node";
@@ -333,6 +335,7 @@ function ProjectCanvasFlowInner() {
         onSelectionChange={handleSelectionChange}
       >
         <Background variant={BackgroundVariant.Dots} />
+        <CanvasLiveCursors />
         <Panel position="bottom-left">
           <CanvasControlBar
             canRedo={canRedo}
@@ -351,6 +354,9 @@ function ProjectCanvasFlowInner() {
             onShapeDragEnd={handleShapeDragEnd}
             onShapeDragStart={handleShapeDragStart}
           />
+        </Panel>
+        <Panel position="top-right">
+          <CanvasPresenceAvatars className="mr-4 mt-4" />
         </Panel>
       </ReactFlow>
     </>

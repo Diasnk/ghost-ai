@@ -4,11 +4,11 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- `18-starter-template` тАФ complete
+- `19-presence-avatar-cursors` — complete
 
 ## Current Goal
 
-- Collaborative presence on the flow surface.
+- None (awaiting next feature spec).
 
 ## Completed
 
@@ -31,6 +31,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - `16-edge-behavior` тАФ `CanvasEdgeData.label` in `types/canvas.ts`; hover-reveal connection handles via `group`/`group-hover` on `CanvasNode` (forced visible during connect-in-progress); custom `CanvasEdge` with `getSmoothStepPath` right-angle routing, end arrowhead, dimmed-at-rest / bright on hover-select styling, and wide transparent hit area; `CanvasEdgeLabel` with `EdgeLabelRenderer` positioned at path midpoint coords from `getSmoothStepPath`, double-click inline editing, pill badges, selected-empty hint, and `updateEdge` тЖТ Liveblocks sync; `ConnectionLineType.SmoothStep` preview in `ProjectCanvas`. Vitest tests for handles, connector defaults, and edge label editing. Verified with `npm test`, `npx tsc --noEmit`, and `npm run build`.
 - `17-canvas-ergonomics` тАФ `CanvasControlBar` pill at bottom-left with zoom out / fit view / zoom in and undo / redo groups separated by a divider; React Flow `zoomIn`/`zoomOut`/`fitView` with 200ms animation; Liveblocks `useUndo`/`useRedo`/`useCanUndo`/`useCanRedo` with disabled dimmed buttons; `hooks/use-keyboard-shortcuts.ts` for `+`/`=` zoom in, `-` zoom out, `Cmd/Ctrl+Z` undo, `Cmd/Ctrl+Shift+Z` and `Cmd/Ctrl+Y` redo with editable-field guard; minimap removed. Verified with `npm test` and `npm run build`.
 - `18-starter-template` тАФ `components/editor/starter-templates.ts` with `CanvasTemplate` type, `templateNode`/`templateEdge` helpers, and three predefined diagrams (microservices, CI/CD pipeline, event-driven system); `lib/canvas-template-import.ts` for remove-all + add-template change batches; `TemplateDiagramPreview` with bounds fitting and `CanvasNodeShape` reuse; `StarterTemplatesModal` + `StarterTemplatesProvider` context bridging navbar/modal to canvas; navbar **Templates** button; import replaces current canvas via `onNodesChange`/`onEdgesChange` тЖТ Liveblocks and `fitView`. No server persistence. Verified with `npm run build`.
+- `19-presence-avatar-cursors` — `CanvasPresenceAvatars` in a top-right React Flow `Panel` (overlapping collaborator stack up to five with `+N` overflow, display-only avatars with image/initials + `ring-base`, conditional divider, canvas-local Clerk `UserButton` at 32px); collaborators filtered from `useOthers()` by Clerk `userId`; `CanvasLiveCursors` renders others-only flow-coordinate pointers with colored name badges via `useOthersConnectionIds` + `useOther`; cursor broadcast on `ReactFlow` `onMouseMove`/`onMouseLeave` with `useUpdateMyPresence` + `screenToFlowPosition`; editor home navbar unchanged. Verified with `npm run build`.
 
 ## In Progress
 
@@ -38,7 +39,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Next Up
 
-- Collaborative presence on the flow surface (`<Cursors />`).
+- Awaiting next feature spec.
 
 ## Open Questions
 
@@ -64,6 +65,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - Edge labels live in `CanvasEdgeData.label` and sync via `useReactFlow().updateEdge()` тЖТ `onEdgesChange` тЖТ Liveblocks. `CanvasEdgeLabel` renders inside `EdgeLabelRenderer` at `labelX`/`labelY` from `getSmoothStepPath`; double-click opens an auto-growing input; saved labels render as pill badges; selected edges with no label show a faint hint. Label interactions use `nodrag`/`nopan`/`nowheel` to avoid canvas drag/pan.
 - Canvas control bar (`CanvasControlBar`) sits bottom-left above the shape panel. Zoom actions call `useReactFlow().zoomIn()`/`zoomOut()`/`fitView()` with 200ms animation. Undo/redo use Liveblocks `useUndo`/`useRedo`/`useCanUndo`/`useCanRedo` from `@liveblocks/react/suspense`; buttons disable and dim when the history stack is empty. Keyboard shortcuts live in `hooks/use-keyboard-shortcuts.ts` and skip events when the target is an input, textarea, select, or contenteditable element.
 - Starter templates are static diagrams in `components/editor/starter-templates.ts` (`CANVAS_TEMPLATES`). Import is client-only: `StarterTemplatesModal` in the workspace shell, handler registered by `ProjectCanvas` via `StarterTemplatesProvider`. Import clears all nodes/edges then adds the template through `createTemplateReplaceChanges()` тЖТ `onNodesChange`/`onEdgesChange` тЖТ Liveblocks, followed by `fitView`. No database or blob persistence; templates follow the same `CanvasNode`/`CanvasEdge` schema as user content.
+- Canvas presence UI is canvas-local only (`CanvasPresenceAvatars` + `CanvasLiveCursors` in `ProjectCanvas`); the shared `EditorNavbar` is unchanged on both editor home and workspace routes. Collaborators are derived from Liveblocks `useOthers()` filtered by Clerk `userId`; the current user is shown via a canvas-local `UserButton` (navbar `UserButton` remains on workspace). Cursor positions are stored in flow coordinates via `screenToFlowPosition` and broadcast with `useUpdateMyPresence`; others' cursors render with per-user colors from auth metadata (`lib/cursor-color.ts`). Cursor rendering uses `useOthersConnectionIds` + `useOther` for performant per-connection updates.
 
 ## Session Notes
 
@@ -89,3 +91,4 @@ Update this file whenever the current phase, active feature, or implementation s
 - `16-edge-behavior`: smooth-step `CanvasEdge` with end arrows, hover-reveal handles, inline edge labels via `EdgeLabelRenderer`; verified with `npm test`, `npx tsc --noEmit`, and `npm run build`.
 - `17-canvas-ergonomics`: bottom-left `CanvasControlBar` with animated zoom/fit and Liveblocks undo/redo; `useKeyboardShortcuts` hook; minimap removed; verified with `npm test` and `npm run build`.
 - `18-starter-template`: three predefined templates with modal previews; navbar **Templates** button; import replaces canvas via Liveblocks flow changes; verified with `npm run build`.
+- `19-presence-avatar-cursors`: canvas top-right presence avatar group + live cursors for collaborators; navbar unchanged; verified with `npm run build`.
