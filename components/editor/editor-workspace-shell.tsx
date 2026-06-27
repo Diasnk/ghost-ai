@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { AiSidebarPlaceholder } from "@/components/editor/ai-sidebar-placeholder";
+import { AiSidebar } from "@/components/editor/ai-sidebar";
 import { EditorNavbar } from "@/components/editor/editor-navbar";
 import { ProjectSidebar } from "@/components/editor/project-sidebar";
 import { ShareProjectDialog } from "@/components/editor/share-project-dialog";
@@ -59,7 +59,7 @@ function EditorWorkspaceShellContent({
           onClose={() => setIsProjectSidebarOpen(false)}
         />
         <main className="relative min-h-0 min-w-0 flex-1 overflow-hidden">{children}</main>
-        <AiSidebarPlaceholder
+        <AiSidebar
           isOpen={isAiSidebarOpen}
           onClose={() => setIsAiSidebarOpen(false)}
         />

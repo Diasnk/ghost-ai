@@ -1,5 +1,6 @@
 import type { Project } from "@/app/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { sortEditorProjectsByCreatedAt } from "@/lib/sort-projects";
 import type { EditorProject } from "@/types/project";
 
 type ProjectAccessResult =
@@ -44,6 +45,7 @@ function toEditorProject(
     id: project.id,
     name: project.name,
     ownership,
+    createdAt: project.createdAt.toISOString(),
   };
 }
 
@@ -53,7 +55,9 @@ export async function listOwnedProjects(userId: string): Promise<EditorProject[]
     orderBy: { createdAt: "desc" },
   });
 
-  return projects.map((project) => toEditorProject(project, "owned"));
+  return sortEditorProjectsByCreatedAt(
+    projects.map((project) => toEditorProject(project, "owned"))
+  );
 }
 
 export async function listSharedProjects(
@@ -66,11 +70,13 @@ export async function listSharedProjects(
   const collaborators = await prisma.projectCollaborator.findMany({
     where: { email: email.trim().toLowerCase() },
     include: { project: true },
-    orderBy: { createdAt: "desc" },
+    orderBy: { project: { createdAt: "desc" } },
   });
 
-  return collaborators.map((collaborator) =>
-    toEditorProject(collaborator.project, "shared")
+  return sortEditorProjectsByCreatedAt(
+    collaborators.map((collaborator) =>
+      toEditorProject(collaborator.project, "shared")
+    )
   );
 }
 

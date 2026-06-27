@@ -4,4 +4,5 @@ export interface EditorProject {
   id: string;
   name: string;
   ownership: ProjectOwnership;
+  createdAt: string;
 }

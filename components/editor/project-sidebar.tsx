@@ -1,12 +1,14 @@
 "use client";
 
 import { Plus, X } from "lucide-react";
+import { useMemo } from "react";
 
 import { useEditorProjects } from "@/components/editor/editor-projects-context";
 import { ProjectSidebarItem } from "@/components/editor/project-sidebar-item";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { sortEditorProjectsByCreatedAt } from "@/lib/sort-projects";
 import { cn } from "@/lib/utils";
 
 interface ProjectSidebarProps {
@@ -58,8 +60,20 @@ export function ProjectSidebar({
 }: ProjectSidebarProps) {
   const { projects, openCreateDialog } = useEditorProjects();
 
-  const ownedProjects = projects.filter((project) => project.ownership === "owned");
-  const sharedProjects = projects.filter((project) => project.ownership === "shared");
+  const ownedProjects = useMemo(
+    () =>
+      sortEditorProjectsByCreatedAt(
+        projects.filter((project) => project.ownership === "owned")
+      ),
+    [projects]
+  );
+  const sharedProjects = useMemo(
+    () =>
+      sortEditorProjectsByCreatedAt(
+        projects.filter((project) => project.ownership === "shared")
+      ),
+    [projects]
+  );
 
   return (
     <aside

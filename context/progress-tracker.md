@@ -4,7 +4,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- `19-presence-avatar-cursors` — complete
+- `20-ai-sidebar-shell` — complete
 
 ## Current Goal
 
@@ -32,6 +32,8 @@ Update this file whenever the current phase, active feature, or implementation s
 - `17-canvas-ergonomics` тАФ `CanvasControlBar` pill at bottom-left with zoom out / fit view / zoom in and undo / redo groups separated by a divider; React Flow `zoomIn`/`zoomOut`/`fitView` with 200ms animation; Liveblocks `useUndo`/`useRedo`/`useCanUndo`/`useCanRedo` with disabled dimmed buttons; `hooks/use-keyboard-shortcuts.ts` for `+`/`=` zoom in, `-` zoom out, `Cmd/Ctrl+Z` undo, `Cmd/Ctrl+Shift+Z` and `Cmd/Ctrl+Y` redo with editable-field guard; minimap removed. Verified with `npm test` and `npm run build`.
 - `18-starter-template` тАФ `components/editor/starter-templates.ts` with `CanvasTemplate` type, `templateNode`/`templateEdge` helpers, and three predefined diagrams (microservices, CI/CD pipeline, event-driven system); `lib/canvas-template-import.ts` for remove-all + add-template change batches; `TemplateDiagramPreview` with bounds fitting and `CanvasNodeShape` reuse; `StarterTemplatesModal` + `StarterTemplatesProvider` context bridging navbar/modal to canvas; navbar **Templates** button; import replaces current canvas via `onNodesChange`/`onEdgesChange` тЖТ Liveblocks and `fitView`. No server persistence. Verified with `npm run build`.
 - `19-presence-avatar-cursors` — `CanvasPresenceAvatars` in a top-right React Flow `Panel` (overlapping collaborator stack up to five with `+N` overflow, display-only avatars with image/initials + `ring-base`, conditional divider, canvas-local Clerk `UserButton` at 32px); collaborators filtered from `useOthers()` by Clerk `userId`; `CanvasLiveCursors` renders others-only flow-coordinate pointers with colored name badges via `useOthersConnectionIds` + `useOther`; cursor broadcast on `ReactFlow` `onMouseMove`/`onMouseLeave` with `useUpdateMyPresence` + `screenToFlowPosition`; editor home navbar unchanged. Verified with `npm run build`.
+- `sidebar-project-sorting` — `EditorProject.createdAt` threaded from Prisma through `lib/projects.ts`; shared tab sorted by project `createdAt` (not invite date); `lib/sort-projects.ts` + `lib/format-date.ts` for client-safe descending sort and locale-aware date display; sidebar items show formatted creation date; optimistic create uses POST response `createdAt` and re-sorts so new projects appear at top immediately. Verified with `npm run build`.
+- `20-ai-sidebar-shell` — `AiSidebar` replaces placeholder with floating slide-in shell (`bg-base/95`, preserved open/close from `EditorWorkspaceShell`); header with bot icon, title, subtitle, and close button; shadcn `Tabs` for **AI Architect** and **Specs**; `AiArchitectTab` with scrollable chat, empty state, starter prompt chips, local message bubbles, auto-resizing textarea (Enter send / Shift+Enter newline), and brand send button; `AiSpecsTab` with Generate Spec button and static demo spec card. UI-only — no backend or AI generation. Verified with `npm run build`.
 
 ## In Progress
 
@@ -66,6 +68,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - Canvas control bar (`CanvasControlBar`) sits bottom-left above the shape panel. Zoom actions call `useReactFlow().zoomIn()`/`zoomOut()`/`fitView()` with 200ms animation. Undo/redo use Liveblocks `useUndo`/`useRedo`/`useCanUndo`/`useCanRedo` from `@liveblocks/react/suspense`; buttons disable and dim when the history stack is empty. Keyboard shortcuts live in `hooks/use-keyboard-shortcuts.ts` and skip events when the target is an input, textarea, select, or contenteditable element.
 - Starter templates are static diagrams in `components/editor/starter-templates.ts` (`CANVAS_TEMPLATES`). Import is client-only: `StarterTemplatesModal` in the workspace shell, handler registered by `ProjectCanvas` via `StarterTemplatesProvider`. Import clears all nodes/edges then adds the template through `createTemplateReplaceChanges()` тЖТ `onNodesChange`/`onEdgesChange` тЖТ Liveblocks, followed by `fitView`. No database or blob persistence; templates follow the same `CanvasNode`/`CanvasEdge` schema as user content.
 - Canvas presence UI is canvas-local only (`CanvasPresenceAvatars` + `CanvasLiveCursors` in `ProjectCanvas`); the shared `EditorNavbar` is unchanged on both editor home and workspace routes. Collaborators are derived from Liveblocks `useOthers()` filtered by Clerk `userId`; the current user is shown via a canvas-local `UserButton` (navbar `UserButton` remains on workspace). Cursor positions are stored in flow coordinates via `screenToFlowPosition` and broadcast with `useUpdateMyPresence`; others' cursors render with per-user colors from auth metadata (`lib/cursor-color.ts`). Cursor rendering uses `useOthersConnectionIds` + `useOther` for performant per-connection updates.
+- AI sidebar open state lives in `EditorWorkspaceShell` (`isAiSidebarOpen`); `AiSidebar` is UI-only with local chat message state in `AiArchitectTab`. No Liveblocks, Trigger.dev, or API integration yet.
 
 ## Session Notes
 
@@ -92,3 +95,4 @@ Update this file whenever the current phase, active feature, or implementation s
 - `17-canvas-ergonomics`: bottom-left `CanvasControlBar` with animated zoom/fit and Liveblocks undo/redo; `useKeyboardShortcuts` hook; minimap removed; verified with `npm test` and `npm run build`.
 - `18-starter-template`: three predefined templates with modal previews; navbar **Templates** button; import replaces canvas via Liveblocks flow changes; verified with `npm run build`.
 - `19-presence-avatar-cursors`: canvas top-right presence avatar group + live cursors for collaborators; navbar unchanged; verified with `npm run build`.
+- `20-ai-sidebar-shell`: `AiSidebar` + Architect/Specs tabs with chat and demo spec UI; verified with `npm run build`.

@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { buildRoomIdPreview } from "@/lib/room-id";
+import { sortEditorProjectsByCreatedAt } from "@/lib/sort-projects";
 import type { EditorProject } from "@/types/project";
 
 export type ProjectDialogType = "create" | "rename" | "delete" | null;
@@ -98,10 +99,21 @@ export function useProjectActions(initialProjects: EditorProject[]) {
         return;
       }
 
-      setProjects((current) => [
-        ...current,
-        { id: roomId, name: trimmedName, ownership: "owned" },
-      ]);
+      const { project } = (await response.json()) as {
+        project: { id: string; name: string; createdAt: string };
+      };
+
+      setProjects((current) =>
+        sortEditorProjectsByCreatedAt([
+          ...current,
+          {
+            id: project.id,
+            name: project.name,
+            ownership: "owned",
+            createdAt: project.createdAt,
+          },
+        ])
+      );
       closeDialog();
       router.push(`/editor/${roomId}`);
       router.refresh();
